@@ -1,0 +1,111 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: luciano <luciano@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/07 11:07:29 by lucianosilv       #+#    #+#             */
+/*   Updated: 2022/06/10 01:59:29 by luciano          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line_bonus.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+char	*save(char *file)
+{
+	int		i;
+	int		c;
+	char	*s;
+
+	i = 0;
+	while (file[i] && file[i] != '\n')
+		i++;
+	if (!file[i])
+	{
+		free(file);
+		return (NULL);
+	}
+	s = (char *)malloc(sizeof(char) * (ft_strlen(file) - i + 1));
+	if (!s)
+		return (NULL);
+	i++;
+	c = 0;
+	while (file[i])
+		s[c++] = file[i++];
+	s[c] = '\0';
+	free(file);
+	return (s);
+}
+
+char *get_line(char *file)
+{
+	int i;
+	char *s;
+
+	i = 0;
+	if (!file[i])
+		return (NULL);
+    while (file[i] && file[i] != '\n')
+		i++;
+    s = (char *)malloc(sizeof(char) * (i + 2));
+	if (!s)
+		return (NULL);
+	i = 0;
+	while (file[i] && file[i] != '\n')
+	{
+		s[i] = file[i];
+		i++;
+	}
+	if (file[i] == '\n')
+	{
+		s[i] = file[i];
+		i++;
+	}
+	s[i] = '\0';
+	return (s);
+}
+
+char *read_file(int fd, char *file)
+{
+	char	*buff;
+	int		read_bytes;
+
+	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buff)
+		return (NULL);
+	read_bytes = 1;
+	while (!ft_strchr(file, '\n') && read_bytes != 0)
+	{
+		read_bytes = read(fd, buff, BUFFER_SIZE);
+		if (read_bytes == -1)
+		{
+			free(buff);
+			return (NULL);
+		}
+		buff[read_bytes] = '\0';
+		file = ft_strjoin(file, buff);
+	}
+	free(buff);
+	return (file);
+}
+
+char *get_next_line(int fd)
+{
+	static char *file;
+	char *line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		return (NULL);
+	}
+	file = read_file(fd, file);
+    if (!file)
+		return (NULL);
+	line = get_line(file);
+	file = save(file);
+	return (line);
+}
