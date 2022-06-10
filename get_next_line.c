@@ -6,7 +6,7 @@
 /*   By: luciano <luciano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 11:07:29 by lucianosilv       #+#    #+#             */
-/*   Updated: 2022/06/09 19:47:19 by luciano          ###   ########.fr       */
+/*   Updated: 2022/06/10 00:06:48 by luciano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,9 @@ char *get_line(char *file)
 	i = 0;
 	if (!file[i])
 		return (NULL);
-	s = (char *)malloc(sizeof(char) * (i + 2));
+    while (file[i] && file[i] != '\n')
+		i++;
+    s = (char *)malloc(sizeof(char) * (i + 2));
 	if (!s)
 		return (NULL);
 	i = 0;
@@ -69,27 +71,26 @@ char *get_line(char *file)
 
 char *read_file(int fd, char *file)
 {
-	char *ptr;
-	int read_f;
+	char	*buff;
+	int		read_bytes;
 
-	ptr = malloc((BUFFER_SIZE + 1) * sizeof(char));
-
-	if (!ptr)
+	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buff)
 		return (NULL);
-	read_f = 1;
-	while (!ft_strchr(file, '\n') && read_f != 0)
+	read_bytes = 1;
+	while (!ft_strchr(file, '\n') && read_bytes != 0)
 	{
-		read_f = read(fd, ptr, BUFFER_SIZE);
-
-		if (read_f == -1)
+		read_bytes = read(fd, buff, BUFFER_SIZE);
+		if (read_bytes == -1)
 		{
-			free(ptr);
+			free(buff);
 			return (NULL);
 		}
-		ptr[read_f] = '\0';
-		file = ft_strjoin(file, ptr);
+		buff[read_bytes] = '\0';
+		file = ft_strjoin(file, buff);
 	}
-	return (ptr);
+	free(buff);
+	return (file);
 }
 
 char *get_next_line(int fd)
@@ -102,6 +103,8 @@ char *get_next_line(int fd)
 		return (NULL);
 	}
 	file = read_file(fd, file);
+    if (!file)
+		return (NULL);
 	line = get_line(file);
 	file = save(file);
 	return (line);
