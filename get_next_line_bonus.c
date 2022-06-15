@@ -6,7 +6,7 @@
 /*   By: luciano <luciano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 11:07:29 by lucianosilv       #+#    #+#             */
-/*   Updated: 2022/06/10 01:59:29 by luciano          ###   ########.fr       */
+/*   Updated: 2022/06/15 12:13:41 by luciano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@ char	*save(char *file)
 	return (s);
 }
 
-char *get_line(char *file)
+char	*get_line(char *file)
 {
-	int i;
-	char *s;
+	int		i;
+	char	*s;
 
 	i = 0;
 	if (!file[i])
 		return (NULL);
-    while (file[i] && file[i] != '\n')
+	while (file[i] && file[i] != '\n')
 		i++;
-    s = (char *)malloc(sizeof(char) * (i + 2));
+	s = (char *)malloc(sizeof(char) * (i + 2));
 	if (!s)
 		return (NULL);
 	i = 0;
@@ -69,7 +69,7 @@ char *get_line(char *file)
 	return (s);
 }
 
-char *read_file(int fd, char *file)
+char	*read_file(int fd, char *file)
 {
 	char	*buff;
 	int		read_bytes;
@@ -93,19 +93,19 @@ char *read_file(int fd, char *file)
 	return (file);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	static char *file;
-	char *line;
+	static char	*file[4096];
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
 		return (NULL);
 	}
-	file = read_file(fd, file);
-    if (!file)
+	file[fd] = read_file(fd, file[fd]);
+	if (!file[fd])
 		return (NULL);
-	line = get_line(file);
-	file = save(file);
+	line = get_line(file[fd]);
+	file[fd] = save(file[fd]);
 	return (line);
 }
