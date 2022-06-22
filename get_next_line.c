@@ -6,14 +6,11 @@
 /*   By: luciano <luciano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 11:07:29 by lucianosilv       #+#    #+#             */
-/*   Updated: 2022/06/15 12:44:34 by luciano          ###   ########.fr       */
+/*   Updated: 2022/06/21 23:28:33 by luciano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 char	*save(char *file)
 {
